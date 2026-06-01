@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>サボり方診断</title>
+<meta name="description" content="10問でわかる、あなたのサボり方タイプ診断。会社・学校・バイトで共感必至の16タイプ。">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="サボり方診断">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#ff8a3d">
+<meta name="format-detection" content="telephone=no">
+<!-- OGP -->
+<meta property="og:title" content="サボり方診断">
+<meta property="og:description" content="10問でわかる、あなたのサボり方タイプ。こいつのサボり方は何タイプ？">
+<meta property="og:type" content="website">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon.svg">
+<link rel="icon" type="image/svg+xml" href="icon.svg">
+<style>
+:root{
+  --orange:#ff8a3d;
+  --orange-d:#f06f1d;
+  --cream:#fff7ee;
+  --cream2:#fff1e0;
+  --ink:#3a2a1a;
+  --ink-soft:#7a6450;
+  --line:#f0d9bf;
+  --card:#ffffff;
+  --accent:#ffb877;
+  --shadow:0 6px 24px rgba(214,120,40,.14);
+  --radius:18px;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+html,body{background:linear-gradient(160deg,#ffe7c7 0%,#ffd6a8 38%,#ffc89a 100%);background-attachment:fixed;}
+body{
+  font-family:'Hiragino Kaku Gothic ProN','Hiragino Sans','Meiryo',sans-serif;
+  color:var(--ink);font-size:15px;line-height:1.7;
+  min-height:100dvh;padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom);
+}
+.wrap{max-width:600px;margin:0 auto;padding:20px 16px 60px;}
+.page{display:none;animation:fade .35s ease;}
+.page.active{display:block;}
+@keyframes fade{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:none;}}
+
+/* buttons */
+.btn{border:none;border-radius:999px;padding:15px 30px;font-size:16px;font-weight:800;cursor:pointer;
+  font-family:inherit;transition:transform .12s,box-shadow .12s,background .15s;}
+.btn:active{transform:scale(.97);}
+.btn-main{background:linear-gradient(135deg,var(--orange),var(--orange-d));color:#fff;box-shadow:0 6px 18px rgba(240,111,29,.4);}
+.btn-main:hover{box-shadow:0 8px 22px rgba(240,111,29,.5);}
+.btn-ghost{background:#fff;color:var(--orange-d);border:2px solid var(--accent);}
+.btn-ghost:hover{background:var(--cream2);}
+.btn-x{background:#111;color:#fff;}
+.btn-copy{background:#fff;color:var(--ink);border:2px solid var(--line);}
+.btn-pdf{background:#fff;color:var(--orange-d);border:2px solid var(--orange-d);}
+.btn-pdf:hover{background:var(--cream2);}
+
+/* ===== TOP ===== */
+.hero{text-align:center;padding:30px 10px 10px;}
+.hero .emoji{font-size:74px;line-height:1;filter:drop-shadow(0 8px 12px rgba(200,110,40,.25));animation:bob 3s ease-in-out infinite;}
+@keyframes bob{0%,100%{transform:translateY(0) rotate(-3deg);}50%{transform:translateY(-8px) rotate(3deg);}}
+.hero h1{font-size:34px;font-weight:900;letter-spacing:.04em;margin:14px 0 6px;color:var(--ink);
+  text-shadow:0 2px 0 #fff;}
+.hero .lead{font-size:15px;color:var(--ink-soft);font-weight:600;margin-bottom:4px;}
+.hero .badge{display:inline-block;background:#fff;color:var(--orange-d);font-weight:800;font-size:12px;
+  border-radius:999px;padding:5px 16px;margin:10px 0 18px;box-shadow:var(--shadow);}
+.hero .start-wrap{margin:8px 0 6px;}
+.hero .note{font-size:12px;color:var(--ink-soft);margin-top:12px;}
+
+.concept{background:var(--card);border-radius:var(--radius);padding:20px 20px;box-shadow:var(--shadow);margin:26px 0 18px;}
+.concept p{font-size:14px;color:var(--ink-soft);line-height:1.9;}
+.concept .big{font-size:18px;font-weight:900;color:var(--orange-d);display:block;text-align:center;margin:6px 0 12px;}
+
+.types-teaser{margin-top:6px;}
+.types-teaser .tt-title{font-size:13px;font-weight:800;color:var(--ink-soft);text-align:center;margin-bottom:12px;}
+.chip-grid{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;}
+.chip{background:#fff;border:1.5px solid var(--line);border-radius:999px;padding:7px 13px;font-size:12px;font-weight:700;color:var(--ink);}
+.chip .e{margin-right:3px;}
+
+/* ===== QUIZ ===== */
+.quiz-head{position:sticky;top:0;z-index:5;background:linear-gradient(180deg,rgba(255,224,178,.96),rgba(255,224,178,.0));
+  padding:10px 4px 14px;margin:-8px -4px 8px;backdrop-filter:blur(2px);}
+.quiz-head h2{font-size:20px;font-weight:900;text-align:center;}
+.pbar-wrap{height:10px;background:#fff;border-radius:999px;margin-top:10px;overflow:hidden;box-shadow:inset 0 1px 3px rgba(180,110,50,.2);}
+.pbar{height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--orange-d));border-radius:999px;transition:width .35s;}
+.pcount{text-align:center;font-size:12px;font-weight:800;color:var(--ink-soft);margin-top:6px;}
+
+.q-card{background:var(--card);border-radius:var(--radius);padding:18px 16px 16px;box-shadow:var(--shadow);margin-bottom:16px;
+  scroll-margin-top:80px;}
+.q-card.unanswered-flash{animation:shake .4s;}
+@keyframes shake{0%,100%{transform:translateX(0);}25%{transform:translateX(-6px);}75%{transform:translateX(6px);}}
+.q-num{display:inline-block;background:var(--orange);color:#fff;font-weight:900;font-size:12px;border-radius:999px;
+  padding:3px 12px;margin-bottom:10px;}
+.q-text{font-size:16px;font-weight:800;line-height:1.6;margin-bottom:14px;}
+.opt{display:flex;align-items:center;gap:11px;width:100%;text-align:left;background:var(--cream);border:2px solid var(--line);
+  border-radius:14px;padding:13px 14px;font-size:14px;font-weight:700;color:var(--ink);cursor:pointer;margin-bottom:9px;
+  font-family:inherit;line-height:1.55;transition:all .14s;}
+.opt:last-child{margin-bottom:0;}
+.opt:hover{border-color:var(--accent);}
+.opt .mark{flex:0 0 26px;height:26px;border-radius:50%;border:2px solid var(--accent);display:flex;align-items:center;
+  justify-content:center;font-weight:900;font-size:13px;color:var(--orange-d);background:#fff;transition:all .14s;}
+.opt.sel{background:linear-gradient(135deg,#fff0e0,#ffe2c4);border-color:var(--orange);box-shadow:0 3px 10px rgba(240,111,29,.18);}
+.opt.sel .mark{background:var(--orange);border-color:var(--orange);color:#fff;}
+
+.quiz-foot{margin-top:6px;}
+.err{display:none;background:#fff;border:2px solid #ffb0a0;color:#c0392b;font-weight:800;font-size:13px;
+  border-radius:12px;padding:11px 14px;margin-bottom:12px;text-align:center;}
+.quiz-btns{display:flex;gap:10px;}
+.quiz-btns .btn{flex:1;}
+
+/* ===== RESULT ===== */
+.result-hero{background:linear-gradient(150deg,var(--orange),var(--orange-d));border-radius:24px;padding:28px 20px 24px;
+  text-align:center;color:#fff;box-shadow:0 10px 30px rgba(214,90,20,.35);margin-bottom:18px;position:relative;overflow:hidden;}
+.result-hero::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 80% 10%,rgba(255,255,255,.25),transparent 45%);}
+.result-hero .r-label{font-size:13px;font-weight:800;opacity:.9;letter-spacing:.06em;}
+.result-hero .r-emoji{font-size:76px;line-height:1;margin:6px 0;filter:drop-shadow(0 6px 8px rgba(150,60,10,.35));}
+.result-hero .r-name{font-size:27px;font-weight:900;line-height:1.35;text-shadow:0 2px 4px rgba(140,50,10,.3);}
+.result-hero .r-name small{display:block;font-size:14px;font-weight:800;opacity:.92;margin-top:8px;}
+.result-hero .r-one{margin-top:14px;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.4);border-radius:14px;
+  padding:11px 14px;font-size:15px;font-weight:800;line-height:1.6;position:relative;}
+
+.rsec{background:var(--card);border-radius:var(--radius);padding:18px 18px;box-shadow:var(--shadow);margin-bottom:14px;}
+.rsec h3{font-size:15px;font-weight:900;color:var(--orange-d);display:flex;align-items:center;gap:7px;margin-bottom:11px;
+  padding-bottom:9px;border-bottom:2px dashed var(--line);}
+.rsec h3 .ic{font-size:18px;}
+.rsec ul{list-style:none;}
+.rsec ul.feat li{position:relative;padding:6px 0 6px 24px;font-size:14px;font-weight:600;line-height:1.65;border-bottom:1px solid #faf0e2;}
+.rsec ul.feat li:last-child{border-bottom:none;}
+.rsec ul.feat li::before{content:"✔";position:absolute;left:0;top:6px;color:var(--orange);font-weight:900;}
+.serif{display:flex;flex-direction:column;gap:8px;}
+.serif .line{background:var(--cream);border-left:4px solid var(--accent);border-radius:0 10px 10px 0;padding:9px 13px;
+  font-size:14px;font-weight:700;line-height:1.55;}
+.serif .line::before{content:"\201C";color:var(--orange);font-weight:900;margin-right:2px;}
+.serif .line::after{content:"\201D";color:var(--orange);font-weight:900;margin-left:2px;}
+.rsec p.body{font-size:14px;font-weight:600;line-height:1.85;color:var(--ink);}
+.advice-box{background:linear-gradient(135deg,#fff4e6,#ffe8cf);border:2px solid var(--accent);border-radius:14px;
+  padding:14px 15px;font-size:14px;font-weight:700;line-height:1.8;}
+.compat-box{font-size:14px;font-weight:600;line-height:1.9;}
+.compat-box b{color:var(--orange-d);}
+
+.second{background:var(--card);border-radius:var(--radius);padding:14px 16px;box-shadow:var(--shadow);margin-bottom:14px;
+  display:flex;align-items:center;gap:12px;}
+.second .s-e{font-size:34px;line-height:1;}
+.second .s-t{font-size:12px;font-weight:800;color:var(--ink-soft);}
+.second .s-n{font-size:15px;font-weight:900;color:var(--ink);}
+
+.share-card{background:var(--card);border-radius:var(--radius);padding:18px 18px 20px;box-shadow:var(--shadow);margin-bottom:14px;text-align:center;}
+.share-card h3{font-size:15px;font-weight:900;color:var(--orange-d);margin-bottom:6px;}
+.share-card p{font-size:12px;color:var(--ink-soft);margin-bottom:14px;}
+.share-btns{display:flex;flex-direction:column;gap:10px;}
+.share-btns .btn{width:100%;}
+.toast{position:fixed;left:50%;bottom:32px;transform:translateX(-50%) translateY(20px);background:#111;color:#fff;
+  font-weight:800;font-size:14px;padding:12px 22px;border-radius:999px;opacity:0;pointer-events:none;transition:all .3s;z-index:50;}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+.result-foot{display:flex;flex-direction:column;gap:10px;margin-top:6px;}
+.result-foot .btn{width:100%;}
+
+.footer{text-align:center;font-size:11px;color:var(--ink-soft);margin-top:28px;opacity:.8;}
+
+@media(max-width:380px){
+  .hero h1{font-size:28px;}
+  .result-hero .r-name{font-size:23px;}
+  .result-hero .r-emoji{font-size:64px;}
+}
+
+/* ===== 印刷（PDF保存） ===== */
+@media print{
+  @page{margin:12mm;}
+  html,body{background:#fff !important;}
+  .wrap{max-width:100%;padding:0;}
+  *{-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+  /* 結果以外・操作系は印刷しない */
+  #page-top,#page-quiz,.share-card,.result-foot,.toast,.footer{display:none !important;}
+  /* 結果ヒーローは白背景＋枠線にして、白文字が消えるのを防ぐ */
+  .result-hero{background:#fff !important;color:var(--ink) !important;border:3px solid var(--orange);
+    box-shadow:none !important;border-radius:18px;}
+  .result-hero::before{display:none !important;}
+  .result-hero .r-label,.result-hero .r-name small{color:var(--orange-d) !important;}
+  .result-hero .r-one{background:var(--cream) !important;color:var(--ink) !important;border-color:var(--orange) !important;}
+  /* カードはページ途中で割れないように */
+  .rsec,.second,.result-hero{break-inside:avoid;page-break-inside:avoid;box-shadow:none !important;
+    border:1px solid var(--line);}
+  .result-hero{border:3px solid var(--orange);}
+  .rsec h3{break-after:avoid;page-break-after:avoid;}
+  body{font-size:13px;}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ===== TOP ===== -->
+  <section id="page-top" class="page active">
+    <div class="hero">
+      <div class="emoji">😴</div>
+      <h1>サボり方診断</h1>
+      <p class="lead">あなたの“サボる才能”、診断します。</p>
+      <div class="badge">⏱ 10問・1分・全16タイプ</div>
+      <div class="start-wrap">
+        <button class="btn btn-main" id="startBtn" style="font-size:18px;padding:16px 48px;">診断スタート</button>
+      </div>
+      <p class="note">※ いじるのは「サボり方」だけ。人格は無傷です。</p>
+    </div>
+
+    <div class="concept">
+      <span class="big">こいつのサボり方は〇〇タイプ</span>
+      <p>真面目に働いてるフリ、気配を消す技、明日の自分への全力の信頼——。<br>
+      あなたが無意識にやっている“サボりの型”を、ちょっと毒舌に、でも愛をもって暴きます。
+      会社・学校・バイト、どこかで必ず「いるいる」となるはず。</p>
+    </div>
+
+    <div class="types-teaser">
+      <div class="tt-title">― 全16タイプの一部 ―</div>
+      <div class="chip-grid" id="chipGrid"></div>
+    </div>
+
+    <div style="text-align:center;margin-top:26px;">
+      <button class="btn btn-ghost" id="startBtn2">さっそく診断する →</button>
+    </div>
+    <div class="footer">サボり方診断 / エンタメ目的の診断アプリです</div>
+  </section>
+
+  <!-- ===== QUIZ ===== -->
+  <section id="page-quiz" class="page">
+    <div class="quiz-head">
+      <h2>サボり方診断</h2>
+      <div class="pbar-wrap"><div class="pbar" id="pbar"></div></div>
+      <div class="pcount" id="pcount">回答 0 / 10</div>
+    </div>
+    <div id="questions"></div>
+    <div class="quiz-foot">
+      <div class="err" id="errMsg"></div>
+      <div class="quiz-btns">
+        <button class="btn btn-ghost" id="backTopBtn">← やめる</button>
+        <button class="btn btn-main" id="resultBtn">結果を見る 🎉</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== RESULT ===== -->
+  <section id="page-result" class="page">
+    <div class="result-hero">
+      <div class="r-label">あなたの診断結果</div>
+      <div class="r-emoji" id="rEmoji">😴</div>
+      <div class="r-name">こいつのサボり方は<small id="rName">〇〇タイプ</small></div>
+      <div class="r-one" id="rOne"></div>
+    </div>
+
+    <div class="rsec">
+      <h3><span class="ic">🔍</span>特徴</h3>
+      <ul class="feat" id="rFeat"></ul>
+    </div>
+
+    <div class="rsec">
+      <h3><span class="ic">🗣</span>よくある言い訳</h3>
+      <div class="serif" id="rExcuse"></div>
+    </div>
+
+    <div class="rsec">
+      <h3><span class="ic">😱</span>バレやすい瞬間</h3>
+      <p class="body" id="rDetect"></p>
+    </div>
+
+    <div class="rsec">
+      <h3><span class="ic">👀</span>周りからの見え方</h3>
+      <p class="body" id="rSeen"></p>
+    </div>
+
+    <div class="rsec">
+      <h3><span class="ic">💡</span>改善アドバイス</h3>
+      <div class="advice-box" id="rAdvice"></div>
+    </div>
+
+    <div class="rsec">
+      <h3><span class="ic">🤝</span>相性のいいサボりタイプ</h3>
+      <div class="compat-box" id="rCompat"></div>
+    </div>
+
+    <div class="second" id="secondBox">
+      <div class="s-e" id="sEmoji">🙃</div>
+      <div>
+        <div class="s-t">ちなみに、隠れ第2タイプは…</div>
+        <div class="s-n" id="sName"></div>
+      </div>
+    </div>
+
+    <div class="share-card">
+      <h3>結果をシェアする 📣</h3>
+      <p>友達にも診断させて、サボり方を晒し合おう。</p>
+      <div class="share-btns">
+        <button class="btn btn-x" id="shareXBtn">𝕏 でポストする</button>
+        <button class="btn btn-copy" id="copyBtn">結果をコピーする</button>
+      </div>
+    </div>
+
+    <div class="result-foot">
+      <button class="btn btn-pdf" id="pdfBtn">結果をPDFで保存する 📄</button>
+      <button class="btn btn-main" id="retryBtn">もう一回診断する 🔄</button>
+      <button class="btn btn-ghost" id="resultTopBtn">TOPに戻る</button>
+    </div>
+    <div class="footer">サボり方診断 / エンタメ目的の診断アプリです</div>
+  </section>
+
+</div>
+<div class="toast" id="toast">コピーしました！</div>
+
+<script>
+/* ===================== データ ===================== */
+const TYPES = {
+  ninja:{ emoji:"🥷", name:"気配消し忍者タイプ",
+    one:"「いたっけ？」と言われたら勝ち。",
+    feat:["会議は、うなずきと相槌だけで完走する","仕事が飛んできそうな空気を察知して気配を消す","発言ゼロでも『ちゃんと参加してた風』を出せる","大事な決めごとの瞬間だけ、視線をそっとそらす"],
+    excuse:["あ、それ聞いてなかったです","えっ、自分の担当でしたっけ？","目立たないだけで、ちゃんとやってますよ"],
+    detect:"点呼や名簿チェックで「あれ、この人何してたっけ？」と存在を疑われた瞬間。会議でいきなり名指しされて、フリーズしたとき。",
+    seen:"同僚は「悪い人じゃないけど、何してるか分からない」。上司は「気づいたら議事録に名前がない」。敵は作らないけど、評価もされにくい不思議な存在。",
+    advice:"その察知能力、もったいない！面倒事を避けるんじゃなく“先回り”に使ったら、普通に頼れる人になれるよ。気配、たまには出していこう。",
+    compat:"<b>責任スライド横流しタイプ</b>とは、絶妙に無関係を保てる平和な相棒。<b>会議ミュート潜伏タイプ</b>とは、オンラインとオフラインで気配を消し合う名コンビ。"},
+  kanjin:{ emoji:"🎨", name:"やってます感職人タイプ",
+    one:"進捗ゼロ、雰囲気は満点。",
+    feat:["中身は進んでないが『進んでる空気』の演出が一流","進捗確認には『今ちょうどまとめてます』で全対応","付箋・ノート・開いた資料で“仕事してる現場”を作る","締切直前に帳尻を合わせる火事場力もある"],
+    excuse:["今まとめてるところです","方向性はもう固まってます","あとは清書するだけなんで"],
+    detect:"「じゃあ今の途中段階だけ見せて」と言われた瞬間。画面共有を求められて、一瞬だけ目が泳いだとき。",
+    seen:"上司は「やってる感はあるのに、成果物が出てこない」。同僚は「口頭の進捗報告だけは毎回完璧」。演出力で信頼を稼ぐタイプ。",
+    advice:"その演出力で本気で着手したら、誰も敵わない。『まとめてるフリ』をしてた時間で、もう半分まとまってたはずだよ。",
+    compat:"<b>脳内だけ完了タイプ</b>とは“完成してます詐欺”の同盟。<b>真面目風ポンコツタイプ</b>とは、見た目だけで上司を安心させる黄金コンビ。"},
+  deadline:{ emoji:"⏰", name:"締切ブースト待ちタイプ",
+    one:"普段は省エネ、締切前だけ覚醒。",
+    feat:["締切が遠いうちは1ミリも動かない","焦りが来た瞬間に、急に人間になる","一夜漬けの瞬間最大風速はチームトップ","余裕がある状態だと、逆に何もできない"],
+    excuse:["まだ時間あるんで大丈夫です","追い込まれた方が燃えるタイプなんで","結局いつも間に合ってるんで"],
+    detect:"締切が前倒しになった瞬間、顔色が変わる。「進捗どう？」が一週間前すぎて、答えに詰まったとき。",
+    seen:"上司は「結果は出すけど、毎回ヒヤヒヤさせられる」。同僚は「最後だけ別人になる」。信頼と心配が半々の人。",
+    advice:"締切前のその集中力、3日前から出せたら定時で帰れるよ。火事場の馬鹿力は、火事になる前に使おう。",
+    compat:"<b>明日の自分信者タイプ</b>とは“あとでやる”を強化し合う危険な相性。<b>やってます感職人タイプ</b>とは、直前まで雰囲気で乗り切るコンビ。"},
+  slide:{ emoji:"🛝", name:"責任スライド横流しタイプ",
+    one:"解決したのではない。流しただけ。",
+    feat:["自分に来た仕事を、自然な流れで他人に流す","『これ〇〇さんの方が詳しいかも』で生き延びる","当事者の顔をしながら、当事者ではない","気づくと、関係者だけが増えている"],
+    excuse:["それ自分より詳しい人いますよ","念のため〇〇さんにも確認しますね","自分は補助に回ります"],
+    detect:"「いや、これは君の担当だよね」と逃げ道を塞がれた瞬間。流した先から「で、結局どうするの？」と返ってきたとき。",
+    seen:"同僚は「いつの間にか自分の仕事になってる」。上司は「調整はうまいけど、手は動かしてない」。人を動かす才能は本物。",
+    advice:"人を巻き込む力は立派なマネジメント素質。あとは自分の分も少し持てば、ただの有能なリーダーだよ。",
+    compat:"“有識者を呼ぶ”点で<b>気配消し忍者タイプ</b>と好相性。<b>真面目風ポンコツタイプ</b>に流すと事故るので、そこだけ注意。"},
+  brk:{ emoji:"☕", name:"休憩の概念バグりタイプ",
+    one:"「ちょっとだけ」は、信用してはいけない。",
+    feat:["5分休憩のつもりが、平気で30分経つ","スマホを開いた瞬間、時間の感覚が消える","『区切りがいいところまで』が永遠に来ない","休憩から戻るときの記憶がない"],
+    excuse:["ちょっとだけ休憩します","区切りついたらやります","もう少しで戻ります"],
+    detect:"「さっきも休憩してなかった？」と回数を指摘された瞬間。離席時間の合計を計算されたとき。",
+    seen:"同僚は「休憩のタイミングが多くて、長い」。上司は「離席が読めない」。憎めないけど、ちょっと心配されている。",
+    advice:"休むのは悪くない、むしろ大事。ただタイマーだけはかけよう。『あと5分』のあなたの5分は、たいてい45分です。",
+    compat:"<b>トイレ長期政権タイプ</b>とは“気づけば時間が溶ける”同盟。<b>明日の自分信者タイプ</b>とは、時間にルーズな者同士で居心地がいい。"},
+  brain:{ emoji:"🧠", name:"脳内だけ完了タイプ",
+    one:"頭の中では8割、現実は0割。",
+    feat:["段取りと構想は、完璧に組み上がっている","本人の中ではほぼ終わっている感覚","でも実際には、何も提出されていない","『考える』と『やる』の間に深い谷がある"],
+    excuse:["だいたい頭の中では出来てます","あとは書き出すだけなんで","構成はもう固まってます"],
+    detect:"「じゃあ今あるものを出して」と言われた瞬間。脳内の完成版と、現実の白紙のギャップが露呈したとき。",
+    seen:"上司は「アイデアはあるのに、形にならない」。同僚は「語りは熱いけど、成果物は見たことない」。発想力だけは一級品。",
+    advice:"その構想力は本物。あとは“1行でも書き出す”だけ。脳内の傑作、現実に連れてきてあげて。",
+    compat:"<b>やってます感職人タイプ</b>とは“完成してます”を言い張る同盟。<b>今からやる永久機関タイプ</b>とは、語りだけ立派なコンビ。"},
+  sick:{ emoji:"🤒", name:"体調ほのめかし防御タイプ",
+    one:"熱は微妙、テンションも微妙。",
+    feat:["明確には休まないが、ほんのりしんどそうな空気を出す","『無理しないで』と言われるラインを正確に狙う","重いタスクが来そうなときだけ、少し弱る","体調を理由に、進捗が緩やかに止まる"],
+    excuse:["ちょっと体調が…","大丈夫です（と小さい声で）","無理しない範囲でやります"],
+    detect:"「しんどそうだったのに、飲み会は元気だね」と言われた瞬間。タスクが終わった途端に急回復したとき。",
+    seen:"同僚は「気を遣わせるのがうまい」。上司は「強く言いづらい空気を作る」。優しさを、そっと逆手に取る人。",
+    advice:"本当にしんどいときはちゃんと休んで。ただ“ほのめかし”の演技力、別のことに使ったらもったいないよ。",
+    compat:"<b>仮病海外旅行タイプ</b>とは病弱演技の師弟関係。<b>忙しい演出アカデミー賞タイプ</b>とは、演技派同士でアカデミー賞を分け合う。"},
+  majime:{ emoji:"📔", name:"真面目風ポンコツタイプ",
+    one:"悪気がないぶん、いちばん手強い。",
+    feat:["返事もいいしメモも取る、姿勢は完璧","一見ちゃんとしているのに、なぜか進んでいない","怒られると神妙にうなずき、また同じことをする","本人に、サボってる自覚が一切ない"],
+    excuse:["ちゃんとメモしました","次は気をつけます","やる気はあったんです"],
+    detect:"メモを見返したら、何も書いてなかった瞬間。同じミスの3回目で「あれ、前も言ったよね？」となったとき。",
+    seen:"上司は「怒るに怒れない」。同僚は「いい子なんだけど、結果がついてこない」。憎めなさで生き延びる才能の持ち主。",
+    advice:"姿勢は満点、あとは“メモを見返す”だけ。書いて満足せず、1個でも実行に移したら一気に化けるよ。",
+    compat:"<b>やってます感職人タイプ</b>とは上司を安心させる名コンビ。<b>責任スライド横流しタイプ</b>から仕事を受け取ると詰むので注意。"},
+  tomorrow:{ emoji:"🌅", name:"明日の自分信者タイプ",
+    one:"信仰対象は、いつも未来の自分。",
+    feat:["今日の自分を信用せず、明日の自分に全部託す","明日になると、また明日の自分に期待する","『やる気が出たら本気出す』を永遠に待っている","計画はいつも完璧、実行だけが来ない"],
+    excuse:["明日やります","今日はもう頭が働かないんで","やる気が出たらやります"],
+    detect:"「その“明日”って、何回目？」と数えられた瞬間。先週の『明日やる』が、今週もそのまま残っているとき。",
+    seen:"同僚は「言うわりに動かない」。上司は「計画は立派、着手は未確認」。期待だけが、静かに積もっていく。",
+    advice:"明日の自分も、たぶん同じこと言うよ。5分だけでいいから、“今日の自分”に1個やらせてあげて。",
+    compat:"<b>締切ブースト待ちタイプ</b>とは“あとでやる”を強化し合う最高に居心地のいいコンビ。<b>脳内だけ完了タイプ</b>とは、永久に未提出。"},
+  reply:{ emoji:"⚡", name:"返信だけ秒速タイプ",
+    one:"既読と仕事は、別物。",
+    feat:["『了解です！』は1秒、実行は来週","リアクション速度と成果物速度が、完全に反比例","とりあえず即レスして、相手を安心させるのが得意","返した時点で、少し満足してしまう"],
+    excuse:["了解です！（やるとは言ってない）","すぐ対応します！","把握しました！"],
+    detect:"「秒で返事きたのに、もう3日進んでないよね」と言われた瞬間。即レスの数だけ、未着手が溜まっているとき。",
+    seen:"同僚は「レスは速いのに、納品は遅い」。上司は「返事だけは100点」。テンポで信頼を稼ぎ、成果でこっそり目減りさせる人。",
+    advice:"その反応速度、ほんの一部でいいから手にも回そう。『了解です』の勢いで、最初の1タスクだけ即やってみよう。",
+    compat:"<b>やってます感職人タイプ</b>とは“それっぽさ”で世界を回すコンビ。<b>明日の自分信者タイプ</b>とは、即レス→着手は明日の黄金リレー。"},
+  window:{ emoji:"🪟", name:"資料開きっぱなしタイプ",
+    one:"ウィンドウだけ、働いている。",
+    feat:["PowerPointや資料だけは、常に開いてある","画面をチラ見されると、仕事してそうに見える","中身はニュース・SNS・通販タブ","Alt+Tabの切り替え速度だけ、異常に速い"],
+    excuse:["ずっと資料と向き合ってます","集中して見てました","今ちょうど確認してたとこです"],
+    detect:"後ろを通った人に「そのタブ、3時間前と同じだね」と言われた瞬間。画面共有で、うっかり別タブが見えたとき。",
+    seen:"同僚は「画面はいつも仕事モード」。上司は「真剣に見てるようで、進捗はない」。見た目詐欺の達人。",
+    advice:"開いてる資料、たまには中身も進めてあげて。そのAlt+Tab反射神経、作業に向けたら最強だよ。",
+    compat:"<b>会議ミュート潜伏タイプ</b>とは、画面の中で完全潜伏する名コンビ。<b>やってます感職人タイプ</b>とは、見せかけ最強タッグ。"},
+  busy:{ emoji:"🏆", name:"忙しい演出アカデミー賞タイプ",
+    one:"忙しさの演技力だけで、主演男優賞。",
+    feat:["常に忙しそう、でも何をしているかは不明","カレンダーは予定で埋まっている（中身は謎）","ため息・早歩き・『今日マジ詰んでる』が口癖","忙しアピールで、新しい仕事を寄せ付けない"],
+    excuse:["今ちょっと立て込んでて…","今日マジで詰んでて","余裕できたらやります（来ない）"],
+    detect:"「その“忙しい”の中身、何してたの？」と聞かれた瞬間。手帳は予定で埋まってるのに、成果が空のとき。",
+    seen:"同僚は「いつも忙しそうで、頼みづらい」。上司は「稼働は高そうなのに、成果が見えない」。演技で仕事を遠ざける名優。",
+    advice:"忙しさを“演じる”エネルギーで、実は2タスクは終わってたはず。たまには本当に暇な顔も見せていいんだよ。",
+    compat:"<b>体調ほのめかし防御タイプ</b>とは、演技派同士の頂上決戦。<b>責任スライド横流しタイプ</b>とは、“忙しいので無理”で仕事を完璧にブロック。"},
+  fakevaca:{ emoji:"🏝️", name:"仮病海外旅行タイプ",
+    one:"熱は37.8℃、テンションはハワイ。",
+    feat:["月曜になると、謎の体調不良がやってくる","有休申請だけは、異常に早い","休んでいるのに、SNSはしっかり更新される","なぜか時差のある場所から既読がつく"],
+    excuse:["ちょっと体調が…","病院行ってきます","今日は安静にします"],
+    detect:"『療養中』のはずが、ビーチの写真を投稿した瞬間。休んだ翌日だけ、妙に日焼けしているとき。",
+    seen:"同僚は「休むの早すぎ」。上司は「診断書はないが、写真の証拠はある」。憎めないけど、まったく隠せていない。",
+    advice:"休むのは権利だから、堂々と休んでOK。ただ“仮病”の設定だけは詰めよう。海の写真は、さすがに致命的です。",
+    compat:"<b>体調ほのめかし防御タイプ</b>とは病弱演技の師弟関係。<b>忙しい演出アカデミー賞タイプ</b>とは、演技力で世界を回す名優コンビ。"},
+  mute:{ emoji:"🔇", name:"会議ミュート潜伏タイプ",
+    one:"ミュート解除速度だけは、プロ。",
+    feat:["オンライン会議の進化が生んだ、現代の怪物","名前だけ参加して、画面の向こうで別のことをしている","呼ばれた瞬間だけ覚醒し、的確に相槌を打つ","カメラオフ・ミュートが基本装備"],
+    excuse:["すみません、回線が…","ちょっと音声トラブルで","今のところ、もう一度いいですか？（聞いてない）"],
+    detect:"突然指名されて「えっ、はい、あ…なんでしたっけ」となった瞬間。回線のせいにしたのに、通知音が鳴ったとき。",
+    seen:"同僚は「いるのに、いない」。上司は「発言はないが、出席はしている謎の存在」。実体のつかめないオンラインの幽霊。",
+    advice:"そのミュート解除の反射神経、すごい。同じ集中力を会議の中身に向けたら、たぶん一番デキる人だよ。",
+    compat:"<b>気配消し忍者タイプ</b>とは、オンラインとオフラインで気配を消し合う名コンビ。<b>資料開きっぱなしタイプ</b>とは、画面の中で完全潜伏。"},
+  toilet:{ emoji:"🚽", name:"トイレ長期政権タイプ",
+    one:"個室に、政権を築いている。",
+    feat:["トイレが、事実上の第二オフィス","1日の合計滞在時間が、映画一本分","『考え事』という名の、長いスマホタイム","行き先を聞かれても、完璧なアリバイがある"],
+    excuse:["ちょっとお手洗いに","お腹の調子が…","考えごとしてました"],
+    detect:"「さっきもトイレ行ってなかった？」と滞在時間を集計された瞬間。スマホを持って立つのを、見られたとき。",
+    seen:"同僚は「離席が多い、しかも長い」。上司は「どこにいるか分からない時間がある」。誰も追及できない聖域の主。",
+    advice:"個室が心のオアシスなのは認める。でも、政権交代の時間も作ろう。映画一本ぶんあれば、何か一個終わってたよ。",
+    compat:"<b>休憩の概念バグりタイプ</b>とは“気づけば時間が溶ける”同盟。<b>気配消し忍者タイプ</b>とは、席にいない理由を共有できる。"},
+  nowdo:{ emoji:"🔋", name:"今からやる永久機関タイプ",
+    one:"日本語で最も信用されない言葉を、愛している。",
+    feat:["『今からやる』が、3時間続く","やる気は本当にある。着手だけが、ない","準備・段取り・環境づくりだけは完璧","『やろうとしてた』が口癖"],
+    excuse:["今からやろうと思ってたとこです","もうちょっとしたら本気出します","準備だけ整えてました"],
+    detect:"「さっきも“今から”って言ってたよね？」と時計を見られた瞬間。机だけ片付いて、成果物が白紙のとき。",
+    seen:"同僚は「やる気はあるのに、進まない」。上司は「気持ちは買うけど、結果がない」。意欲だけが、空回りしている人。",
+    advice:"『今からやる』の“今”を、本当に今にしよう。考える前に1行、5分だけ手を動かせば、永久機関は止まるよ。",
+    compat:"<b>明日の自分信者タイプ</b>とは“先送り”の二大巨頭。<b>脳内だけ完了タイプ</b>とは、語りだけ立派なコンビ。"}
+};
+
+// 同点時の優先順位（面白いタイプを優先）
+const PRIORITY = ["fakevaca","mute","toilet","busy","window","nowdo","brain","slide","reply","sick","ninja","kanjin","tomorrow","deadline","brk","majime"];
+
+const QUESTIONS = [
+  { q:"やる気が出ないとき、まず何をする？",
+    opts:[
+      ["とりあえずスマホを開く", {brk:2}],
+      ["「今からやる」と自分に言い聞かせる", {nowdo:2}],
+      ["「明日やろう」と決めて別のことをする", {tomorrow:2}],
+      ["頭の中で段取りだけ完璧に組む", {brain:2}],
+    ]},
+  { q:"締切が近づいてきた。あなたは？",
+    opts:[
+      ["直前まで動かず、焦ってから本気を出す", {deadline:2}],
+      ["「今まとめてます」と言いつつ、実はこれから", {kanjin:2}],
+      ["詳しそうな人に“相談”という名の丸投げ", {slide:2}],
+      ["なんとなく体調が下降してくる", {sick:2}],
+    ]},
+  { q:"会議・授業・勤務中のあなたは？",
+    opts:[
+      ["うなずきと相槌だけで、存在感を消す", {ninja:2}],
+      ["オンラインなら名前だけ参加、ミュートで潜伏", {mute:2}],
+      ["PCで資料を開きつつ、別タブを見てる", {window:2}],
+      ["メモは取る。でも内容は頭に入ってない", {majime:2}],
+    ]},
+  { q:"仕事・タスクを振られそうな空気。どうする？",
+    opts:[
+      ["そっと気配を消して、目を合わせない", {ninja:2}],
+      ["「それ〇〇さんの方が詳しいですよ」と流す", {slide:2}],
+      ["「了解です！」と即答（やるとは言ってない）", {reply:2}],
+      ["「今ちょっと立て込んでて…」と忙しさを演出", {busy:2}],
+    ]},
+  { q:"気づくと、つい長く居座ってしまうのは？",
+    opts:[
+      ["トイレ。実質、第二のオフィス", {toilet:2}],
+      ["休憩。5分のつもりが30分", {brk:2}],
+      ["「調べ物」と称した、ネットの海", {window:1,nowdo:1}],
+      ["明日への先送り。今日はもう無理", {tomorrow:2}],
+    ]},
+  { q:"あなたの「やってます感」の出し方は？",
+    opts:[
+      ["とにかく資料・画面を開きっぱなしにする", {window:2}],
+      ["「今まとめてます」「整理中です」で乗り切る", {kanjin:2}],
+      ["返信と相槌だけを、爆速にする", {reply:2}],
+      ["常に忙しそうな空気をまとう", {busy:2}],
+    ]},
+  { q:"進捗を聞かれた。本当は手つかず。なんて言う？",
+    opts:[
+      ["「だいたい頭の中では出来てます」", {brain:2}],
+      ["「今ちょうど、まとめてるところです」", {kanjin:2}],
+      ["「今からやろうと思ってたとこです」", {nowdo:2}],
+      ["「ちょっと体調が…進められてなくて」", {sick:2}],
+    ]},
+  { q:"怒られた・指摘された。あなたの反応は？",
+    opts:[
+      ["神妙にメモを取る（でも、また繰り返す）", {majime:2}],
+      ["「〇〇さんにも確認したんですが」と責任を分散", {slide:2}],
+      ["その場は平謝り、翌週しれっと有休を取る", {fakevaca:2}],
+      ["「今ちょうどやろうとしてたんです！」", {nowdo:2}],
+    ]},
+  { q:"あなたが本気を出す条件は？",
+    opts:[
+      ["締切が、首元まで来たとき", {deadline:2}],
+      ["明日になったら…（そして明日に期待する）", {tomorrow:2}],
+      ["頭の中で完成したと感じたら、満足してしまう", {brain:2}],
+      ["基本出さない。気配を消して嵐が過ぎるのを待つ", {ninja:2}],
+    ]},
+  { q:"ぶっちゃけ、いちばんやりがちな“逃げ”は？",
+    opts:[
+      ["体調を理由に休む。でもSNSは更新される", {fakevaca:2}],
+      ["オンライン会議で名前だけ参加、呼ばれた時だけ覚醒", {mute:2}],
+      ["トイレにこもって、ゆっくりスマホタイム", {toilet:2}],
+      ["メモして「やった気」になって、満足する", {majime:2}],
+    ]},
+];
+
+/* ===================== ロジック ===================== */
+const answers = new Array(QUESTIONS.length).fill(-1);
+
+function $(id){return document.getElementById(id);}
+function show(pageId){
+  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+  $(pageId).classList.add("active");
+  window.scrollTo({top:0,behavior:"instant"});
+}
+
+/* TOP: タイプチップ */
+function renderChips(){
+  const pick=["ninja","fakevaca","brain","busy","tomorrow","mute","kanjin","toilet","reply"];
+  $("chipGrid").innerHTML = pick.map(k=>
+    `<span class="chip"><span class="e">${TYPES[k].emoji}</span>${TYPES[k].name}</span>`).join("");
+}
+
+/* 質問描画 */
+function renderQuestions(){
+  $("questions").innerHTML = QUESTIONS.map((q,qi)=>`
+    <div class="q-card" id="qc-${qi}">
+      <span class="q-num">Q${qi+1}</span>
+      <div class="q-text">${q.q}</div>
+      ${q.opts.map((o,oi)=>`
+        <button class="opt" data-q="${qi}" data-o="${oi}">
+          <span class="mark">${"ABCD"[oi]}</span>
+          <span>${o[0]}</span>
+        </button>`).join("")}
+    </div>`).join("");
+
+  document.querySelectorAll(".opt").forEach(btn=>{
+    btn.addEventListener("click",()=>{
+      const qi=+btn.dataset.q, oi=+btn.dataset.o;
+      answers[qi]=oi;
+      const card=$("qc-"+qi);
+      card.querySelectorAll(".opt").forEach(b=>b.classList.remove("sel"));
+      btn.classList.add("sel");
+      card.classList.remove("unanswered-flash");
+      updateProgress();
+      // 次の未回答へやさしくスクロール
+      const next=answers.findIndex(a=>a<0);
+      if(next>=0 && next>qi){
+        setTimeout(()=>$("qc-"+next).scrollIntoView({behavior:"smooth",block:"center"}),180);
+      }
+    });
+  });
+}
+
+function updateProgress(){
+  const done=answers.filter(a=>a>=0).length;
+  $("pbar").style.width=(done/QUESTIONS.length*100)+"%";
+  $("pcount").textContent=`回答 ${done} / ${QUESTIONS.length}`;
+}
+
+/* 採点 */
+function calc(){
+  const score={};
+  Object.keys(TYPES).forEach(k=>score[k]=0);
+  answers.forEach((oi,qi)=>{
+    const s=QUESTIONS[qi].opts[oi][1];
+    for(const k in s) score[k]=(score[k]||0)+s[k];
+  });
+  // 並べ替え：得点降順、同点はPRIORITY順
+  const ranked=Object.keys(TYPES).sort((a,b)=>{
+    if(score[b]!==score[a]) return score[b]-score[a];
+    return PRIORITY.indexOf(a)-PRIORITY.indexOf(b);
+  });
+  return {ranked,score};
+}
+
+/* 結果描画 */
+let currentKey=null;
+function renderResult(){
+  const {ranked}=calc();
+  const key=ranked[0];
+  currentKey=key;
+  const t=TYPES[key];
+
+  $("rEmoji").textContent=t.emoji;
+  $("rName").textContent="「"+t.name+"」";
+  $("rOne").textContent=t.one;
+  $("rFeat").innerHTML=t.feat.map(f=>`<li>${f}</li>`).join("");
+  $("rExcuse").innerHTML=t.excuse.map(e=>`<div class="line">${e}</div>`).join("");
+  $("rDetect").textContent=t.detect;
+  $("rSeen").textContent=t.seen;
+  $("rAdvice").textContent=t.advice;
+  $("rCompat").innerHTML=t.compat;
+
+  // 第2タイプ
+  const t2=TYPES[ranked[1]];
+  $("sEmoji").textContent=t2.emoji;
+  $("sName").textContent=t2.name;
+
+  show("page-result");
+}
+
+/* シェア文言 */
+function shareText(){
+  const t=TYPES[currentKey];
+  return `こいつのサボり方は「${t.name}」${t.emoji}\n\n${t.one}\n\nあなたのサボり方は何タイプ？👇\n#サボり方診断`;
+}
+
+/* ===================== イベント ===================== */
+$("startBtn").addEventListener("click",startQuiz);
+$("startBtn2").addEventListener("click",startQuiz);
+function startQuiz(){
+  answers.fill(-1);
+  renderQuestions();
+  updateProgress();
+  $("errMsg").style.display="none";
+  show("page-quiz");
+}
+
+$("backTopBtn").addEventListener("click",()=>show("page-top"));
+$("resultTopBtn").addEventListener("click",()=>show("page-top"));
+$("retryBtn").addEventListener("click",startQuiz);
+$("pdfBtn").addEventListener("click",()=>window.print());
+
+$("resultBtn").addEventListener("click",()=>{
+  const missing=answers.findIndex(a=>a<0);
+  if(missing>=0){
+    const done=answers.filter(a=>a>=0).length;
+    $("errMsg").textContent=`まだ ${QUESTIONS.length-done} 問あります。サボらず全部答えて！`;
+    $("errMsg").style.display="block";
+    const card=$("qc-"+missing);
+    card.classList.add("unanswered-flash");
+    card.scrollIntoView({behavior:"smooth",block:"center"});
+    return;
+  }
+  $("errMsg").style.display="none";
+  renderResult();
+});
+
+$("shareXBtn").addEventListener("click",()=>{
+  const url="https://twitter.com/intent/tweet?text="+encodeURIComponent(shareText());
+  window.open(url,"_blank","noopener");
+});
+
+$("copyBtn").addEventListener("click",async()=>{
+  const text=shareText();
+  try{
+    await navigator.clipboard.writeText(text);
+    toast("結果をコピーしました！");
+  }catch(e){
+    // フォールバック
+    const ta=document.createElement("textarea");
+    ta.value=text;document.body.appendChild(ta);ta.select();
+    try{document.execCommand("copy");toast("結果をコピーしました！");}
+    catch(_){toast("コピーに失敗しました…");}
+    document.body.removeChild(ta);
+  }
+});
+
+let toastTimer=null;
+function toast(msg){
+  const el=$("toast");
+  el.textContent=msg;
+  el.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>el.classList.remove("show"),1800);
+}
+
+/* init */
+renderChips();
+</script>
+</body>
+</html>

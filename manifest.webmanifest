@@ -1,0 +1,12 @@
+{
+  "name": "サボり方診断",
+  "short_name": "サボり方診断",
+  "description": "10問でわかる、あなたのサボり方タイプ診断。全16タイプ。",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#ffd6a8",
+  "theme_color": "#ff8a3d",
+  "icons": [
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}
