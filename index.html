@@ -68,6 +68,12 @@ body{
   border-radius:999px;padding:5px 16px;margin:10px 0 18px;box-shadow:var(--shadow);}
 .hero .start-wrap{margin:8px 0 6px;}
 .hero .note{font-size:12px;color:var(--ink-soft);margin-top:12px;}
+.hero .name-field{display:flex;flex-direction:column;gap:5px;max-width:310px;margin:0 auto 16px;text-align:left;}
+.hero .name-field label{font-size:12px;font-weight:800;color:var(--ink-soft);padding-left:4px;}
+.hero .name-field input{border:2px solid var(--line);border-radius:12px;padding:12px 14px;font-size:15px;font-family:inherit;
+  font-weight:700;color:var(--ink);background:#fff;width:100%;}
+.hero .name-field input:focus{outline:none;border-color:var(--orange);box-shadow:0 0 0 3px rgba(255,138,61,.18);}
+.hero .name-field input::placeholder{color:#c9b49e;font-weight:600;}
 
 .concept{background:var(--card);border-radius:var(--radius);padding:20px 20px;box-shadow:var(--shadow);margin:26px 0 18px;}
 .concept p{font-size:14px;color:var(--ink-soft);line-height:1.9;}
@@ -195,21 +201,25 @@ body{
   <!-- ===== TOP ===== -->
   <section id="page-top" class="page active">
     <div class="hero">
-      <div class="emoji">😴</div>
+      <div class="emoji">🕵️</div>
       <h1>サボり方診断</h1>
-      <p class="lead">あなたの“サボる才能”、診断します。</p>
+      <p class="lead">自分じゃない。気になる“隣のあいつ”を診断。</p>
       <div class="badge">⏱ 10問・1分・全16タイプ</div>
-      <div class="start-wrap">
-        <button class="btn btn-main" id="startBtn" style="font-size:18px;padding:16px 48px;">診断スタート</button>
+      <div class="name-field">
+        <label for="subjectName">あいつの名前・ニックネーム（任意）</label>
+        <input id="subjectName" type="text" maxlength="12" placeholder="例：となりの先輩 / 後輩のA">
       </div>
-      <p class="note">※ いじるのは「サボり方」だけ。人格は無傷です。</p>
+      <div class="start-wrap">
+        <button class="btn btn-main" id="startBtn" style="font-size:18px;padding:16px 48px;">あいつを診断する</button>
+      </div>
+      <p class="note">※ いじるのは「あいつのサボり方」だけ。本人にはバレないように。</p>
     </div>
 
     <div class="concept">
       <span class="big">こいつのサボり方は〇〇タイプ</span>
-      <p>真面目に働いてるフリ、気配を消す技、明日の自分への全力の信頼——。<br>
-      あなたが無意識にやっている“サボりの型”を、ちょっと毒舌に、でも愛をもって暴きます。
-      会社・学校・バイト、どこかで必ず「いるいる」となるはず。</p>
+      <p>あの同僚、あのクラスメイト、あの後輩——。<br>
+      何かと理由をつけて手を抜く“あいつ”を思い浮かべて、見たまま・感じたままに10問答えるだけ。
+      あいつのサボり方タイプを、ちょっと毒舌に暴きます。「いるいる」必至。</p>
     </div>
 
     <div class="types-teaser">
@@ -218,7 +228,7 @@ body{
     </div>
 
     <div style="text-align:center;margin-top:26px;">
-      <button class="btn btn-ghost" id="startBtn2">さっそく診断する →</button>
+      <button class="btn btn-ghost" id="startBtn2">あいつを診断する →</button>
     </div>
     <div class="footer">サボり方診断 / エンタメ目的の診断アプリです</div>
   </section>
@@ -243,9 +253,9 @@ body{
   <!-- ===== RESULT ===== -->
   <section id="page-result" class="page">
     <div class="result-hero">
-      <div class="r-label">あなたの診断結果</div>
+      <div class="r-label">あいつの診断結果</div>
       <div class="r-emoji" id="rEmoji">😴</div>
-      <div class="r-name">こいつのサボり方は<small id="rName">〇〇タイプ</small></div>
+      <div class="r-name"><span id="rWho">こいつ</span>のサボり方は<small id="rName">〇〇タイプ</small></div>
       <div class="r-one" id="rOne"></div>
     </div>
 
@@ -270,7 +280,7 @@ body{
     </div>
 
     <div class="rsec">
-      <h3><span class="ic">💡</span>改善アドバイス</h3>
+      <h3><span class="ic">💡</span>本人へのアドバイス</h3>
       <div class="advice-box" id="rAdvice"></div>
     </div>
 
@@ -444,80 +454,81 @@ const TYPES = {
 const PRIORITY = ["fakevaca","mute","toilet","busy","window","nowdo","brain","slide","reply","sick","ninja","kanjin","tomorrow","deadline","brk","majime"];
 
 const QUESTIONS = [
-  { q:"やる気が出ないとき、まず何をする？",
+  { q:"あいつ、やる気がなさそうなとき、まず何してる？",
     opts:[
-      ["とりあえずスマホを開く", {brk:2}],
-      ["「今からやる」と自分に言い聞かせる", {nowdo:2}],
-      ["「明日やろう」と決めて別のことをする", {tomorrow:2}],
-      ["頭の中で段取りだけ完璧に組む", {brain:2}],
+      ["とりあえずスマホをいじり出す", {brk:2}],
+      ["「今からやる」って言い続けてる", {nowdo:2}],
+      ["「明日やるわ」と言って別のことを始める", {tomorrow:2}],
+      ["段取りを考えてる風（でも手は動いてない）", {brain:2}],
     ]},
-  { q:"締切が近づいてきた。あなたは？",
+  { q:"締切が近いとき、あいつはどんな感じ？",
     opts:[
-      ["直前まで動かず、焦ってから本気を出す", {deadline:2}],
-      ["「今まとめてます」と言いつつ、実はこれから", {kanjin:2}],
+      ["直前まで動かず、急に焦り出す", {deadline:2}],
+      ["「今まとめてる」と言うが、たぶんこれから", {kanjin:2}],
       ["詳しそうな人に“相談”という名の丸投げ", {slide:2}],
-      ["なんとなく体調が下降してくる", {sick:2}],
+      ["なんとなく体調が悪そうになってくる", {sick:2}],
     ]},
-  { q:"会議・授業・勤務中のあなたは？",
+  { q:"会議・授業・勤務中のあいつを見てると？",
     opts:[
-      ["うなずきと相槌だけで、存在感を消す", {ninja:2}],
-      ["オンラインなら名前だけ参加、ミュートで潜伏", {mute:2}],
-      ["PCで資料を開きつつ、別タブを見てる", {window:2}],
-      ["メモは取る。でも内容は頭に入ってない", {majime:2}],
+      ["うなずきと相槌だけで、存在感がない", {ninja:2}],
+      ["オンラインだと名前だけ参加、ミュートで無反応", {mute:2}],
+      ["PCで資料を開きつつ、明らかに別タブを見てる", {window:2}],
+      ["メモは取ってるけど、頭に入ってなさそう", {majime:2}],
     ]},
-  { q:"仕事・タスクを振られそうな空気。どうする？",
+  { q:"仕事や用事を振られそうな空気のとき、あいつは？",
     opts:[
       ["そっと気配を消して、目を合わせない", {ninja:2}],
-      ["「それ〇〇さんの方が詳しいですよ」と流す", {slide:2}],
-      ["「了解です！」と即答（やるとは言ってない）", {reply:2}],
-      ["「今ちょっと立て込んでて…」と忙しさを演出", {busy:2}],
+      ["「それ〇〇さんが詳しいですよ」と人に流す", {slide:2}],
+      ["「了解です！」と即答（でも動かない）", {reply:2}],
+      ["「今ちょっと立て込んでて…」と忙しいフリ", {busy:2}],
     ]},
-  { q:"気づくと、つい長く居座ってしまうのは？",
+  { q:"あいつが、つい長く居座ってるのは？",
     opts:[
-      ["トイレ。実質、第二のオフィス", {toilet:2}],
-      ["休憩。5分のつもりが30分", {brk:2}],
-      ["「調べ物」と称した、ネットの海", {window:1,nowdo:1}],
-      ["明日への先送り。今日はもう無理", {tomorrow:2}],
+      ["トイレ。やたらと長い", {toilet:2}],
+      ["休憩。5分のはずが30分", {brk:2}],
+      ["「調べ物」と言いつつ、ネットサーフィン", {window:1,nowdo:1}],
+      ["「また今度」と先送りした案件の山", {tomorrow:2}],
     ]},
-  { q:"あなたの「やってます感」の出し方は？",
+  { q:"あいつの「やってます感」の出し方は？",
     opts:[
-      ["とにかく資料・画面を開きっぱなしにする", {window:2}],
-      ["「今まとめてます」「整理中です」で乗り切る", {kanjin:2}],
-      ["返信と相槌だけを、爆速にする", {reply:2}],
-      ["常に忙しそうな空気をまとう", {busy:2}],
+      ["とにかく資料や画面を開きっぱなしにしてる", {window:2}],
+      ["「今まとめてます」「整理中です」を多用", {kanjin:2}],
+      ["返事と相槌だけは、異常に速い", {reply:2}],
+      ["常に忙しそうな空気を出してる", {busy:2}],
     ]},
-  { q:"進捗を聞かれた。本当は手つかず。なんて言う？",
+  { q:"進捗を聞かれたとき、あいつの口ぐせは？",
     opts:[
       ["「だいたい頭の中では出来てます」", {brain:2}],
-      ["「今ちょうど、まとめてるところです」", {kanjin:2}],
+      ["「今ちょうど、まとめてるところで」", {kanjin:2}],
       ["「今からやろうと思ってたとこです」", {nowdo:2}],
-      ["「ちょっと体調が…進められてなくて」", {sick:2}],
+      ["「ちょっと体調が…進んでなくて」", {sick:2}],
     ]},
-  { q:"怒られた・指摘された。あなたの反応は？",
+  { q:"怒られた・指摘されたとき、あいつは？",
     opts:[
-      ["神妙にメモを取る（でも、また繰り返す）", {majime:2}],
-      ["「〇〇さんにも確認したんですが」と責任を分散", {slide:2}],
-      ["その場は平謝り、翌週しれっと有休を取る", {fakevaca:2}],
+      ["神妙にメモを取る（けど、また同じミス）", {majime:2}],
+      ["「〇〇さんにも確認したんですが」と人を巻き込む", {slide:2}],
+      ["その場は謝るが、翌週しれっと休む", {fakevaca:2}],
       ["「今ちょうどやろうとしてたんです！」", {nowdo:2}],
     ]},
-  { q:"あなたが本気を出す条件は？",
+  { q:"あいつが本気を出すのは、どんなとき？",
     opts:[
       ["締切が、首元まで来たとき", {deadline:2}],
-      ["明日になったら…（そして明日に期待する）", {tomorrow:2}],
-      ["頭の中で完成したと感じたら、満足してしまう", {brain:2}],
+      ["明日になったら…（で、また明日に期待）", {tomorrow:2}],
+      ["頭の中で完成した気になって、満足してるとき", {brain:2}],
       ["基本出さない。気配を消して嵐が過ぎるのを待つ", {ninja:2}],
     ]},
-  { q:"ぶっちゃけ、いちばんやりがちな“逃げ”は？",
+  { q:"ぶっちゃけ、あいつのいちばんの“逃げ”は？",
     opts:[
-      ["体調を理由に休む。でもSNSは更新される", {fakevaca:2}],
-      ["オンライン会議で名前だけ参加、呼ばれた時だけ覚醒", {mute:2}],
-      ["トイレにこもって、ゆっくりスマホタイム", {toilet:2}],
-      ["メモして「やった気」になって、満足する", {majime:2}],
+      ["体調を理由に休む。でもSNSは更新されてる", {fakevaca:2}],
+      ["オンライン会議は名前だけ、呼ばれた時だけ反応", {mute:2}],
+      ["トイレにこもって、のんびりスマホタイム", {toilet:2}],
+      ["メモして「やった気」になって、満足してる", {majime:2}],
     ]},
 ];
 
 /* ===================== ロジック ===================== */
 const answers = new Array(QUESTIONS.length).fill(-1);
+let subjectName = ""; // 観察対象（あいつ）の名前。未入力なら「こいつ」
 
 function $(id){return document.getElementById(id);}
 function show(pageId){
@@ -594,6 +605,7 @@ function renderResult(){
   currentKey=key;
   const t=TYPES[key];
 
+  $("rWho").textContent = subjectName || "こいつ";
   $("rEmoji").textContent=t.emoji;
   $("rName").textContent="「"+t.name+"」";
   $("rOne").textContent=t.one;
@@ -615,13 +627,15 @@ function renderResult(){
 /* シェア文言 */
 function shareText(){
   const t=TYPES[currentKey];
-  return `こいつのサボり方は「${t.name}」${t.emoji}\n\n${t.one}\n\nあなたのサボり方は何タイプ？👇\n#サボり方診断`;
+  const who=subjectName||"こいつ";
+  return `${who}のサボり方は「${t.name}」${t.emoji}\n\n${t.one}\n\nあなたの隣のあいつは何タイプ？👇\n#サボり方診断`;
 }
 
 /* ===================== イベント ===================== */
 $("startBtn").addEventListener("click",startQuiz);
 $("startBtn2").addEventListener("click",startQuiz);
 function startQuiz(){
+  subjectName=(($("subjectName")||{}).value||"").trim().slice(0,12);
   answers.fill(-1);
   renderQuestions();
   updateProgress();
@@ -638,7 +652,7 @@ $("resultBtn").addEventListener("click",()=>{
   const missing=answers.findIndex(a=>a<0);
   if(missing>=0){
     const done=answers.filter(a=>a>=0).length;
-    $("errMsg").textContent=`まだ ${QUESTIONS.length-done} 問あります。サボらず全部答えて！`;
+    $("errMsg").textContent=`まだ ${QUESTIONS.length-done} 問あります。あいつのこと、最後まで答えてあげて！`;
     $("errMsg").style.display="block";
     const card=$("qc-"+missing);
     card.classList.add("unanswered-flash");
